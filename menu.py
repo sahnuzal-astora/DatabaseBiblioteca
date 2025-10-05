@@ -1,5 +1,16 @@
 import uvicorn
-from apis import producto, usuario, prestamo
+from apis import (
+    producto,
+    usuario,
+    prestamo,
+    revista,
+    tesis,
+    periodico,
+    comic,
+    mapa,
+    audiolibro,
+    libro,
+)
 from database.config import create_tables
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,6 +36,13 @@ app.add_middleware(
 app.include_router(usuario.router)
 app.include_router(prestamo.router)
 app.include_router(producto.router)
+app.include_router(revista.router)
+app.include_router(tesis.router)
+app.include_router(periodico.router)
+app.include_router(comic.router)
+app.include_router(mapa.router)
+app.include_router(audiolibro.router)
+app.include_router(libro.router)
 
 
 @app.on_event("startup")
