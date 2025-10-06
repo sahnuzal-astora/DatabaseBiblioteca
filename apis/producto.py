@@ -11,7 +11,9 @@ router = APIRouter(prefix="/productos", tags=["productos"])
 
 
 @router.get("/", response_model=List[ProductoResponse])
-async def obtener_productos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def obtener_productos(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
     """Obtener todos los productos con paginación."""
     try:
         producto_crud = ProductoCRUD(db)
@@ -79,8 +81,9 @@ async def crear_producto(producto: ProductoCreate, db: Session = Depends(get_db)
 
 
 @router.put("/{producto_id}", response_model=ProductoResponse)
-async def actualizar_producto(producto_id: UUID, producto_data: ProductoUpdate, db: Session = Depends(get_db)):
-    """Actualizar un producto existente."""
+async def actualizar_producto(
+    producto_id: UUID, producto_data: ProductoUpdate, db: Session = Depends(get_db)
+):
     try:
         producto_crud = ProductoCRUD(db)
         producto_existente = producto_crud.obtener_producto(producto_id)
@@ -90,13 +93,21 @@ async def actualizar_producto(producto_id: UUID, producto_data: ProductoUpdate, 
                 status_code=status.HTTP_404_NOT_FOUND, detail="Producto no encontrado"
             )
 
-        campos_actualizacion = {k: v for k, v in producto_data.dict().items() if v is not None}
-        if not campos_actualizacion:
+        # Campos a actualizar
+        campos_actualizacion = {
+            k: v for k, v in producto_data.dict().items() if v is not None
+        }
+
+        # Sacar id_usuario_edita para evitar duplicado
+        id_usuario_edita = campos_actualizacion.pop("id_usuario_edita", None)
+
+        if not campos_actualizacion and not id_usuario_edita:
             return producto_existente
 
         return producto_crud.actualizar_producto(
-            producto_id, id_usuario_edita=producto_data.id_usuario_edita, **campos_actualizacion
+            producto_id, id_usuario_edita=id_usuario_edita, **campos_actualizacion
         )
+
     except HTTPException:
         raise
     except ValueError as e:
