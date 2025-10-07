@@ -98,7 +98,7 @@ class ProductoBase(BaseModel):
 # Crear producto (input POST)
 class ProductoCreate(ProductoBase):
     id_usuario_crea: UUID
-    id_usuario_edita: Optional[UUID] = None
+    
 
 
 # Actualizar producto (input PUT/PATCH)
