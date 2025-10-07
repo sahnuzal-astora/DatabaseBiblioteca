@@ -68,7 +68,7 @@ async def crear_producto(producto: ProductoCreate, db: Session = Depends(get_db)
             autor=producto.autor,
             anio=producto.anio,
             id_usuario_crea=producto.id_usuario_crea,
-            id_usuario_edita=producto.id_usuario_edita,
+            
             disponible=producto.disponible,
         )
     except ValueError as e:

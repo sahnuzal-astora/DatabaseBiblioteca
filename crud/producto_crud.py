@@ -20,7 +20,7 @@ class ProductoCRUD:
         autor: str,
         anio: int,
         id_usuario_crea: UUID,
-        id_usuario_edita: UUID = None,
+        
         disponible: bool = True,
     ) -> Producto:
         if not titulo or len(titulo.strip()) == 0:
@@ -40,14 +40,7 @@ class ProductoCRUD:
         if not usuario_crea:
             raise ValueError("El usuario creador especificado no existe")
 
-        if id_usuario_edita:
-            usuario_edita = (
-                self.db.query(Usuario)
-                .filter(Usuario.id_usuario == id_usuario_edita)
-                .first()
-            )
-            if not usuario_edita:
-                raise ValueError("El usuario editor especificado no existe")
+        
 
         producto = Producto(
             titulo=titulo.strip(),
@@ -55,7 +48,6 @@ class ProductoCRUD:
             anio=anio,
             disponible=disponible,
             id_usuario_crea=id_usuario_crea,
-            id_usuario_edita=id_usuario_edita,
         )
         self.db.add(producto)
         self.db.commit()
