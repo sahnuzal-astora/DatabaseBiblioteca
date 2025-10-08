@@ -50,9 +50,8 @@ async def crear_usuario(usuario_data: UsuarioCreate, db: Session = Depends(get_d
         usuario_crud = UsuarioCRUD(db)
         usuario = usuario_crud.crear_usuario(
             nombre=usuario_data.nombre,
-            nombre_usuario=usuario_data.nombre_usuario,
             email=usuario_data.email,
-            contraseña=usuario_data.contraseña,
+            contrasena_hash=usuario_data.contrasena_hash,
             telefono=usuario_data.telefono,
             es_admin=usuario_data.es_admin,
         )

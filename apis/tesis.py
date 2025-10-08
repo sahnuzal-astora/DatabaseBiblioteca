@@ -4,17 +4,16 @@ from uuid import UUID
 from crud.tesis_crud import TesisCRUD
 from database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import ( TesisCreate, TesisResponse, TesisUpdate, RespuestaAPI )
+from schemas import TesisCreate, TesisResponse, TesisUpdate, RespuestaAPI
 from sqlalchemy.orm import Session
 
-router = APIRouter(
-    prefix="/tesis",
-    tags=["Tesis"]
-)
+router = APIRouter(prefix="/tesis", tags=["Tesis"])
 
 
 @router.get("/", response_model=List[TesisResponse])
-async def obtener_tesis_lista(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def obtener_tesis_lista(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
     """Obtener todas las tesis con paginación."""
     try:
         crud = TesisCRUD(db)
@@ -69,7 +68,9 @@ async def crear_tesis(tesis_data: TesisCreate, db: Session = Depends(get_db)):
 
 
 @router.put("/{tesis_id}", response_model=TesisResponse)
-async def actualizar_tesis(tesis_id: UUID, tesis_data: TesisUpdate, db: Session = Depends(get_db)):
+async def actualizar_tesis(
+    tesis_id: UUID, tesis_data: TesisUpdate, db: Session = Depends(get_db)
+):
     """Actualizar una tesis existente."""
     try:
         crud = TesisCRUD(db)
@@ -81,7 +82,9 @@ async def actualizar_tesis(tesis_id: UUID, tesis_data: TesisUpdate, db: Session 
                 detail="Tesis no encontrada",
             )
 
-        campos_actualizacion = {k: v for k, v in tesis_data.dict().items() if v is not None}
+        campos_actualizacion = {
+            k: v for k, v in tesis_data.dict().items() if v is not None
+        }
 
         if not campos_actualizacion:
             return existente

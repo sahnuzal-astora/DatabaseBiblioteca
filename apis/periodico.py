@@ -4,13 +4,16 @@ from uuid import UUID
 from crud.periodico_crud import PeriodicoCRUD
 from database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import ( PeriodicoCreate, PeriodicoResponse, PeriodicoUpdate, RespuestaAPI )
+from schemas import PeriodicoCreate, PeriodicoResponse, PeriodicoUpdate, RespuestaAPI
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/periodico", tags=["periodico"])
 
+
 @router.get("/", response_model=List[PeriodicoResponse])
-async def obtener_periodicos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def obtener_periodicos(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
     """Obtener todos los periódicos con paginación."""
     try:
         crud = PeriodicoCRUD(db)
@@ -44,7 +47,9 @@ async def obtener_periodico(periodico_id: UUID, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=PeriodicoResponse, status_code=status.HTTP_201_CREATED)
-async def crear_periodico(periodico_data: PeriodicoCreate, db: Session = Depends(get_db)):
+async def crear_periodico(
+    periodico_data: PeriodicoCreate, db: Session = Depends(get_db)
+):
     """Crear un nuevo periódico."""
     try:
         crud = PeriodicoCRUD(db)
@@ -63,7 +68,9 @@ async def crear_periodico(periodico_data: PeriodicoCreate, db: Session = Depends
 
 
 @router.put("/{periodico_id}", response_model=PeriodicoResponse)
-async def actualizar_periodico(periodico_id: UUID, periodico_data: PeriodicoUpdate, db: Session = Depends(get_db)):
+async def actualizar_periodico(
+    periodico_id: UUID, periodico_data: PeriodicoUpdate, db: Session = Depends(get_db)
+):
     """Actualizar un periódico existente."""
     try:
         crud = PeriodicoCRUD(db)
@@ -75,7 +82,9 @@ async def actualizar_periodico(periodico_id: UUID, periodico_data: PeriodicoUpda
                 detail="Periódico no encontrado",
             )
 
-        campos_actualizacion = {k: v for k, v in periodico_data.dict().items() if v is not None}
+        campos_actualizacion = {
+            k: v for k, v in periodico_data.dict().items() if v is not None
+        }
 
         if not campos_actualizacion:
             return existente

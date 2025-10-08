@@ -58,6 +58,7 @@ class ProductoCRUD:
         return (
             self.db.query(Producto).filter(Producto.id_producto == producto_id).first()
         )
+    
 
     def obtener_productos(self, skip: int = 0, limit: int = 100) -> List[Producto]:
         return self.db.query(Producto).offset(skip).limit(limit).all()

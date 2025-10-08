@@ -4,13 +4,16 @@ from uuid import UUID
 from crud.libro_crud import LibroCRUD
 from database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import ( LibroCreate, LibroResponse, LibroUpdate,RespuestaAPI)
+from schemas import LibroCreate, LibroResponse, LibroUpdate, RespuestaAPI
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/libro", tags=["libro"])
 
+
 @router.get("/", response_model=List[LibroResponse])
-async def obtener_libros(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def obtener_libros(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
     """Obtener todos los libros con paginación."""
     try:
         libro_crud = LibroCRUD(db)
@@ -65,7 +68,9 @@ async def crear_libro(libro_data: LibroCreate, db: Session = Depends(get_db)):
 
 
 @router.put("/{libro_id}", response_model=LibroResponse)
-async def actualizar_libro(libro_id: UUID, libro_data: LibroUpdate, db: Session = Depends(get_db)):
+async def actualizar_libro(
+    libro_id: UUID, libro_data: LibroUpdate, db: Session = Depends(get_db)
+):
     """Actualizar un libro existente."""
     try:
         libro_crud = LibroCRUD(db)

@@ -1,21 +1,19 @@
 from typing import List
 from uuid import UUID
-
 from crud.revista_crud import RevistaCRUD
 from database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import ( RevistaCreate, RevistaResponse, RevistaUpdate, RespuestaAPI )
+from schemas import RevistaCreate, RevistaResponse, RevistaUpdate, RespuestaAPI
 from sqlalchemy.orm import Session
 
-router = APIRouter(
-    prefix="/revistas",
-    tags=["Revistas"]
-)
+router = APIRouter(prefix="/revistas", tags=["Revistas"])
 
 
 @router.get("/", response_model=List[RevistaResponse])
-async def obtener_revistas(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    """Obtener todas las revistas con paginación."""
+async def obtener_revistas(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
+
     try:
         crud = RevistaCRUD(db)
         return crud.obtener_revistas(skip=skip, limit=limit)
@@ -28,7 +26,7 @@ async def obtener_revistas(skip: int = 0, limit: int = 100, db: Session = Depend
 
 @router.get("/{revista_id}", response_model=RevistaResponse)
 async def obtener_revista(revista_id: UUID, db: Session = Depends(get_db)):
-    """Obtener una revista por ID."""
+
     try:
         crud = RevistaCRUD(db)
         revista = crud.obtener_revista(revista_id)
@@ -49,7 +47,7 @@ async def obtener_revista(revista_id: UUID, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=RevistaResponse, status_code=status.HTTP_201_CREATED)
 async def crear_revista(revista_data: RevistaCreate, db: Session = Depends(get_db)):
-    """Crear una nueva revista."""
+
     try:
         crud = RevistaCRUD(db)
         return crud.crear_revista(
@@ -67,8 +65,10 @@ async def crear_revista(revista_data: RevistaCreate, db: Session = Depends(get_d
 
 
 @router.put("/{revista_id}", response_model=RevistaResponse)
-async def actualizar_revista(revista_id: UUID, revista_data: RevistaUpdate, db: Session = Depends(get_db)):
-    """Actualizar una revista existente."""
+async def actualizar_revista(
+    revista_id: UUID, revista_data: RevistaUpdate, db: Session = Depends(get_db)
+):
+
     try:
         crud = RevistaCRUD(db)
 
@@ -79,7 +79,9 @@ async def actualizar_revista(revista_id: UUID, revista_data: RevistaUpdate, db: 
                 detail="Revista no encontrada",
             )
 
-        campos_actualizacion = {k: v for k, v in revista_data.dict().items() if v is not None}
+        campos_actualizacion = {
+            k: v for k, v in revista_data.dict().items() if v is not None
+        }
 
         if not campos_actualizacion:
             return existente
@@ -98,7 +100,7 @@ async def actualizar_revista(revista_id: UUID, revista_data: RevistaUpdate, db: 
 
 @router.delete("/{revista_id}", response_model=RespuestaAPI)
 async def eliminar_revista(revista_id: UUID, db: Session = Depends(get_db)):
-    """Eliminar una revista."""
+
     try:
         crud = RevistaCRUD(db)
 

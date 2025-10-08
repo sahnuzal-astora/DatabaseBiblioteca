@@ -15,7 +15,6 @@ from database.config import create_tables
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Crear la aplicación FastAPI
 app = FastAPI(
     title="Sistema de Gestión de Biblioteca Digital",
     description="API REST para gestión de prestamos productos en una biblioteca digital y categorías.",
@@ -23,16 +22,13 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
-
-# Configurar CORS para permitir peticiones desde el frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción, especificar dominios específicos
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 app.include_router(usuario.router)
 app.include_router(prestamo.router)
 app.include_router(producto.router)
@@ -74,7 +70,7 @@ def main():
         "menu:app",
         host="0.0.0.0",
         port=8000,
-        reload=True,  # Recargar automáticamente en desarrollo
+        reload=True,
         log_level="info",
     )
 

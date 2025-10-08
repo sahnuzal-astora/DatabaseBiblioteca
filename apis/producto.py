@@ -68,7 +68,6 @@ async def crear_producto(producto: ProductoCreate, db: Session = Depends(get_db)
             autor=producto.autor,
             anio=producto.anio,
             id_usuario_crea=producto.id_usuario_crea,
-            
             disponible=producto.disponible,
         )
     except ValueError as e:
@@ -93,12 +92,10 @@ async def actualizar_producto(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Producto no encontrado"
             )
 
-        # Campos a actualizar
         campos_actualizacion = {
             k: v for k, v in producto_data.dict().items() if v is not None
         }
 
-        # Sacar id_usuario_edita para evitar duplicado
         id_usuario_edita = campos_actualizacion.pop("id_usuario_edita", None)
 
         if not campos_actualizacion and not id_usuario_edita:

@@ -4,17 +4,16 @@ from uuid import UUID
 from crud.comic_crud import ComicCRUD
 from database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import ( ComicCreate, ComicResponse, ComicUpdate,RespuestaAPI)
+from schemas import ComicCreate, ComicResponse, ComicUpdate, RespuestaAPI
 from sqlalchemy.orm import Session
 
-router = APIRouter(
-    prefix="/comics",
-    tags=["Comics"]
-)
+router = APIRouter(prefix="/comics", tags=["Comics"])
 
 
 @router.get("/", response_model=List[ComicResponse])
-async def obtener_comics(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def obtener_comics(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
     """Obtener todos los cómics con paginación."""
     try:
         crud = ComicCRUD(db)
@@ -69,7 +68,9 @@ async def crear_comic(comic_data: ComicCreate, db: Session = Depends(get_db)):
 
 
 @router.put("/{comic_id}", response_model=ComicResponse)
-async def actualizar_comic(comic_id: UUID, comic_data: ComicUpdate, db: Session = Depends(get_db)):
+async def actualizar_comic(
+    comic_id: UUID, comic_data: ComicUpdate, db: Session = Depends(get_db)
+):
     """Actualizar un cómic existente."""
     try:
         crud = ComicCRUD(db)
@@ -81,7 +82,9 @@ async def actualizar_comic(comic_id: UUID, comic_data: ComicUpdate, db: Session 
                 detail="Cómic no encontrado",
             )
 
-        campos_actualizacion = {k: v for k, v in comic_data.dict().items() if v is not None}
+        campos_actualizacion = {
+            k: v for k, v in comic_data.dict().items() if v is not None
+        }
 
         if not campos_actualizacion:
             return existente

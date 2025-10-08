@@ -1,7 +1,3 @@
-"""
-Modelos Pydantic para las respuestas de la API
-"""
-
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
@@ -9,21 +5,19 @@ from datetime import datetime
 from pydantic import BaseModel, EmailStr
 
 
-# Modelos base para Usuario
 class UsuarioBase(BaseModel):
     nombre: str
-    nombre_usuario: str
     email: EmailStr
     telefono: Optional[str] = None
     es_admin: bool = False
 
 
 class UsuarioCreate(UsuarioBase):
-    contraseña: str
+    contrasena_hash: str
+
 
 class UsuarioUpdate(BaseModel):
     nombre: Optional[str] = None
-    nombre_usuario: Optional[str] = None
     email: Optional[EmailStr] = None
     telefono: Optional[str] = None
     es_admin: Optional[bool] = None
@@ -31,77 +25,65 @@ class UsuarioUpdate(BaseModel):
 
 
 class UsuarioResponse(UsuarioBase):
-    id: UUID
+    id_usuario: UUID
     activo: bool
     fecha_creacion: datetime
     fecha_edicion: Optional[datetime] = None
 
-    
 
 class UsuarioLogin(BaseModel):
-    nombre_usuario: str
-    contraseña: str
+    nombre: str
+    contrasena_hash: str
 
 
-class CambioContraseña(BaseModel):
-    contraseña_actual: str
-    nueva_contraseña: str
+class CambioContrasena(BaseModel):
+    contrasena_hash_actual: str
+    nueva_contrasena_hash: str
 
 
 class loginResponse(BaseModel):
     clave: str
-    nombre_usuario: UsuarioResponse
+    nombre: UsuarioResponse
 
     class Config:
         from_attributes = True
 
 
-
-# Modelos base para prestamo
-# Schema base (atributos comunes)
 class PrestamoBase(BaseModel):
     usuario_id: UUID
     producto_id: UUID
 
 
-# Para crear un préstamo (input al endpoint POST)
 class PrestamoCreate(PrestamoBase):
     pass
 
 
-# Para devolver un préstamo (input al endpoint PUT/PATCH)
 class PrestamoUpdate(BaseModel):
     devuelto: bool = True
 
 
-# Para mostrar datos de un préstamo (output al cliente)
 class PrestamoResponse(BaseModel):
     id_prestamo: UUID
     usuario_id: UUID
     producto_id: UUID
     fecha_prestamo: datetime
     devuelto: bool
-    
+
     class Config:
         from_attributes = True
 
-#modelos para productos
 
-# Base (atributos comunes)
 class ProductoBase(BaseModel):
-    titulo: str 
-    autor: str 
-    anio: int 
+    titulo: str
+    autor: str
+    anio: int
     disponible: bool = True
 
 
-# Crear producto (input POST)
 class ProductoCreate(ProductoBase):
     id_usuario_crea: UUID
-    
 
 
-# Actualizar producto (input PUT/PATCH)
 class ProductoUpdate(BaseModel):
     titulo: Optional[str] = None
     autor: Optional[str] = None
@@ -110,13 +92,13 @@ class ProductoUpdate(BaseModel):
     id_usuario_edita: Optional[UUID] = None
 
 
-# Respuesta al cliente (output)
 class ProductoResponse(BaseModel):
     id_producto: UUID
     titulo: str
     autor: str
     anio: int
     disponible: bool
+
 
 class RespuestaAPI(BaseModel):
     mensaje: str
@@ -133,17 +115,15 @@ class RespuestaError(BaseModel):
     class Config:
         from_attributes = True
 
-##libro
-
-
 
 class LibroBase(BaseModel):
     genero: str = None
     paginas: int = None
+    producto_id: UUID
 
 
 class LibroCreate(LibroBase):
-    pass
+    id_usuario_crea: UUID
 
 
 class LibroUpdate(BaseModel):
@@ -161,7 +141,8 @@ class LibroResponse(LibroBase):
     fecha_edicion: Optional[datetime] = None
 
     class Config:
-        from_attributes = True  
+        from_attributes = True
+
 
 class AudiolibroBase(BaseModel):
     narrador: str = None
@@ -171,7 +152,7 @@ class AudiolibroBase(BaseModel):
 
 
 class AudiolibroCreate(AudiolibroBase):
-    pass
+    id_usuario_crea: UUID
 
 
 class AudiolibroUpdate(BaseModel):
@@ -189,6 +170,7 @@ class AudiolibroResponse(AudiolibroBase):
     class Config:
         from_attributes = True
 
+
 class ComicBase(BaseModel):
     ilustrador: str = None
     editorial: str = None
@@ -197,7 +179,7 @@ class ComicBase(BaseModel):
 
 
 class ComicCreate(ComicBase):
-    pass
+    id_usuario_crea: UUID
 
 
 class ComicUpdate(BaseModel):
@@ -215,6 +197,7 @@ class ComicResponse(ComicBase):
     class Config:
         from_attributes = True
 
+
 class MapaBase(BaseModel):
     region: str = None
     escala: str = None
@@ -223,7 +206,7 @@ class MapaBase(BaseModel):
 
 
 class MapaCreate(MapaBase):
-    pass
+    id_usuario_crea: UUID
 
 
 class MapaUpdate(BaseModel):
@@ -238,6 +221,7 @@ class MapaResponse(MapaBase):
     id_usuario_crea: UUID
     id_usuario_edita: Optional[UUID] = None
 
+
 class PeriodicoBase(BaseModel):
     fecha_publicacion: str
     producto_id: UUID
@@ -245,24 +229,16 @@ class PeriodicoBase(BaseModel):
     class config:
         from_attributes = True
 
-# -----------------------------
-# Crear periódico
-# -----------------------------
+
 class PeriodicoCreate(PeriodicoBase):
-    pass
+    id_usuario_crea: UUID
 
 
-# -----------------------------
-# Actualizar periódico
-# -----------------------------
 class PeriodicoUpdate(BaseModel):
     fecha_publicacion: Optional[str] = None
     id_usuario_edita: Optional[UUID] = None
 
 
-# -----------------------------
-# Respuesta periódico
-# -----------------------------
 class PeriodicoResponse(PeriodicoBase):
     id_periodico: UUID
     id_usuario_crea: UUID
@@ -273,32 +249,21 @@ class PeriodicoResponse(PeriodicoBase):
     class config:
         from_attributes = True
 
-# -----------------------------
-# Esquema base
-# -----------------------------
+
 class RevistaBase(BaseModel):
     edicion: str
     producto_id: UUID
 
 
-# -----------------------------
-# Crear revista
-# -----------------------------
 class RevistaCreate(RevistaBase):
-    pass
+    id_usuario_crea: UUID
 
 
-# -----------------------------
-# Actualizar revista
-# -----------------------------
 class RevistaUpdate(BaseModel):
     edicion: Optional[str] = None
     id_usuario_edita: Optional[UUID] = None
 
 
-# -----------------------------
-# Respuesta revista
-# -----------------------------
 class RevistaResponse(RevistaBase):
     id_revista: UUID
     id_usuario_crea: UUID
@@ -309,9 +274,7 @@ class RevistaResponse(RevistaBase):
     class Config:
         from_attributes = True
 
-# -----------------------------
-# Esquema base
-# -----------------------------
+
 class TesisBase(BaseModel):
     universidad: str
     director: str
@@ -319,16 +282,10 @@ class TesisBase(BaseModel):
     producto_id: UUID
 
 
-# -----------------------------
-# Crear tesis
-# -----------------------------
 class TesisCreate(TesisBase):
-    pass
+    id_usuario_crea: UUID
 
 
-# -----------------------------
-# Actualizar tesis
-# -----------------------------
 class TesisUpdate(BaseModel):
     universidad: Optional[str] = None
     director: Optional[str] = None
@@ -336,9 +293,6 @@ class TesisUpdate(BaseModel):
     id_usuario_edita: Optional[UUID] = None
 
 
-# -----------------------------
-# Respuesta tesis
-# -----------------------------
 class TesisResponse(TesisBase):
     id_tesis: UUID
     id_usuario_crea: UUID

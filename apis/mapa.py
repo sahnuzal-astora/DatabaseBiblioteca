@@ -4,13 +4,10 @@ from uuid import UUID
 from crud.mapa_crud import MapaCRUD
 from database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import ( MapaCreate, MapaResponse, MapaUpdate,RespuestaAPI)
+from schemas import MapaCreate, MapaResponse, MapaUpdate, RespuestaAPI
 from sqlalchemy.orm import Session
 
-router = APIRouter(
-    prefix="/mapas",
-    tags=["Mapas"]
-)
+router = APIRouter(prefix="/mapas", tags=["Mapas"])
 
 
 @router.get("/", response_model=List[MapaResponse])
@@ -69,7 +66,9 @@ async def crear_mapa(mapa_data: MapaCreate, db: Session = Depends(get_db)):
 
 
 @router.put("/{mapa_id}", response_model=MapaResponse)
-async def actualizar_mapa(mapa_id: UUID, mapa_data: MapaUpdate, db: Session = Depends(get_db)):
+async def actualizar_mapa(
+    mapa_id: UUID, mapa_data: MapaUpdate, db: Session = Depends(get_db)
+):
     """Actualizar un mapa existente."""
     try:
         crud = MapaCRUD(db)
@@ -81,7 +80,9 @@ async def actualizar_mapa(mapa_id: UUID, mapa_data: MapaUpdate, db: Session = De
                 detail="Mapa no encontrado",
             )
 
-        campos_actualizacion = {k: v for k, v in mapa_data.dict().items() if v is not None}
+        campos_actualizacion = {
+            k: v for k, v in mapa_data.dict().items() if v is not None
+        }
 
         if not campos_actualizacion:
             return existente

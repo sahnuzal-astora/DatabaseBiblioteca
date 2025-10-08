@@ -106,3 +106,7 @@ class PrestamoCRUD:
     def obtener_todos(self):
 
         return self.db.query(Prestamo).all()
+
+    def obtener_por_id(self, id_prestamo: UUID):
+    
+        return self.db.query(Prestamo).filter(Prestamo.id_prestamo == id_prestamo).first()

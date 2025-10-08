@@ -4,13 +4,16 @@ from uuid import UUID
 from crud.audiolibro_crud import AudiolibroCRUD
 from database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import ( AudiolibroCreate, AudiolibroResponse,RespuestaAPI, AudiolibroUpdate)
+from schemas import AudiolibroCreate, AudiolibroResponse, RespuestaAPI, AudiolibroUpdate
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/audiolibro", tags=["audiolibro"])
 
+
 @router.get("/", response_model=List[AudiolibroResponse])
-async def obtener_audiolibros(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def obtener_audiolibros(
+    skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
+):
     """Obtener todos los audiolibros con paginación."""
     try:
         crud = AudiolibroCRUD(db)
@@ -43,8 +46,12 @@ async def obtener_audiolibro(audiolibro_id: UUID, db: Session = Depends(get_db))
         )
 
 
-@router.post("/", response_model=AudiolibroResponse, status_code=status.HTTP_201_CREATED)
-async def crear_audiolibro(audiolibro_data: AudiolibroCreate, db: Session = Depends(get_db)):
+@router.post(
+    "/", response_model=AudiolibroResponse, status_code=status.HTTP_201_CREATED
+)
+async def crear_audiolibro(
+    audiolibro_data: AudiolibroCreate, db: Session = Depends(get_db)
+):
     """Crear un nuevo audiolibro."""
     try:
         crud = AudiolibroCRUD(db)
@@ -65,7 +72,11 @@ async def crear_audiolibro(audiolibro_data: AudiolibroCreate, db: Session = Depe
 
 
 @router.put("/{audiolibro_id}", response_model=AudiolibroResponse)
-async def actualizar_audiolibro(audiolibro_id: UUID, audiolibro_data: AudiolibroUpdate, db: Session = Depends(get_db)):
+async def actualizar_audiolibro(
+    audiolibro_id: UUID,
+    audiolibro_data: AudiolibroUpdate,
+    db: Session = Depends(get_db),
+):
     """Actualizar un audiolibro existente."""
     try:
         crud = AudiolibroCRUD(db)
@@ -79,7 +90,9 @@ async def actualizar_audiolibro(audiolibro_id: UUID, audiolibro_data: Audiolibro
             )
 
         # Filtrar campos no nulos
-        campos_actualizacion = {k: v for k, v in audiolibro_data.dict().items() if v is not None}
+        campos_actualizacion = {
+            k: v for k, v in audiolibro_data.dict().items() if v is not None
+        }
 
         if not campos_actualizacion:
             return existente
