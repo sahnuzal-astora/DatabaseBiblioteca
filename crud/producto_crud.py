@@ -6,8 +6,8 @@ from typing import List, Optional
 from uuid import UUID
 
 from sqlalchemy.orm import Session
-from entities.producto import Producto  
-from entities.usuario import Usuario  
+from entities.producto import Producto
+from entities.usuario import Usuario
 
 
 class ProductoCRUD:
@@ -20,7 +20,6 @@ class ProductoCRUD:
         autor: str,
         anio: int,
         id_usuario_crea: UUID,
-        
         disponible: bool = True,
     ) -> Producto:
         if not titulo or len(titulo.strip()) == 0:
@@ -40,8 +39,6 @@ class ProductoCRUD:
         if not usuario_crea:
             raise ValueError("El usuario creador especificado no existe")
 
-        
-
         producto = Producto(
             titulo=titulo.strip(),
             autor=autor.strip(),
@@ -58,7 +55,6 @@ class ProductoCRUD:
         return (
             self.db.query(Producto).filter(Producto.id_producto == producto_id).first()
         )
-    
 
     def obtener_productos(self, skip: int = 0, limit: int = 100) -> List[Producto]:
         return self.db.query(Producto).offset(skip).limit(limit).all()

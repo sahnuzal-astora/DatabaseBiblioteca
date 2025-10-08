@@ -81,7 +81,6 @@ async def actualizar_audiolibro(
     try:
         crud = AudiolibroCRUD(db)
 
-        # Verificar existencia
         existente = crud.obtener_audiolibro(audiolibro_id)
         if not existente:
             raise HTTPException(
@@ -89,7 +88,6 @@ async def actualizar_audiolibro(
                 detail="Audiolibro no encontrado",
             )
 
-        # Filtrar campos no nulos
         campos_actualizacion = {
             k: v for k, v in audiolibro_data.dict().items() if v is not None
         }
