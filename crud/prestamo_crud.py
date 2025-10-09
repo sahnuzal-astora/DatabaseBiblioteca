@@ -14,7 +14,7 @@ class PrestamoCRUD:
         self.db = db
 
     def crear_prestamo(self, usuario_id, producto_id, usuario_crea_id=None):
-        
+
         try:
             usuario = self.db.query(Usuario).filter_by(id_usuario=usuario_id).first()
             producto = (
@@ -94,10 +94,23 @@ class PrestamoCRUD:
             logger.error(f" Error al devolver préstamo: {e}")
             raise
 
-    def obtener_prestamos_usuario(self, usuario_id):
-
-        return self.db.query(Prestamo).filter_by(usuario_id=usuario_id).all()
+    def obtener_prestamos_usuario(
+        self, usuario_id: UUID, skip: int = 0, limit: int = 100
+    ):
+        return (
+            self.db.query(Prestamo)
+            .filter(Prestamo.usuario_id == usuario_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
 
     def obtener_todos(self):
 
         return self.db.query(Prestamo).all()
+
+    def obtener_por_id(self, id_prestamo: UUID):
+
+        return (
+            self.db.query(Prestamo).filter(Prestamo.id_prestamo == id_prestamo).first()
+        )
