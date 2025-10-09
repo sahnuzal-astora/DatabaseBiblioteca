@@ -19,6 +19,7 @@ class Usuario(Base):
         nullable=False,
     )
     nombre = Column(String(100), nullable=False)
+    
     email = Column(String(150), unique=True, index=True, nullable=False)
     telefono = Column(String(20), nullable=True)
     activo = Column(Boolean, default=True)
